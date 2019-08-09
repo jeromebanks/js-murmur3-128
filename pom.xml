@@ -18,7 +18,7 @@
     <groupId>net.agkn</groupId>
     <artifactId>js-murmur3-128</artifactId>
     <packaging>jar</packaging>                                       
-    <version>1.0.0</version>
+    <version>1.0.1-JDB</version>
 
     <name>js-murmur3-128</name>
 

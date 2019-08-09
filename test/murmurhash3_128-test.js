@@ -17,7 +17,7 @@
 // Unit and data tests for murmurhash3_128.js
 
 // *****************************************************************************
-// canned data (processed via the Guava Java (Murmur3_128HashFunction) version) 
+// canned data (processed via the Guava Java (Murmur3_128HashFunction) version)
 // for sanity. The Java calls are provided for reference.
 test("murmur3.hash128", function() {
     // .. empty ................................................................
@@ -261,7 +261,9 @@ test("murmur3.hash128", function() {
                 byteView[28] = 0x1D; byteView[29] = 0x1E; byteView[30] = 0x1F; byteView[31] = 0x20;
                 byteView[32] = 0x21;
         var hashed = murmur3.hash128(rawKey, seed);
+        console.log(hashed.toString(10))
         ok((new goog.math.Long.fromString("-7031486286803411836")).equals(hashed));
+        ///ok((new goog.math.Long.fromString("863881327554208428")).equals(hashed));
     })();
 
     // non-zero seed (for sanity)
@@ -295,22 +297,124 @@ test("murmur3.hash128", function() {
                 byteView[28] = 0x1D; byteView[29] = 0x1E; byteView[30] = 0x1F; byteView[31] = 0x20;
                 byteView[32] = 0x21;
         var hashed = murmur3.hash128(rawKey, seed);
+        console.log(hashed.toString(10))
         ok((new goog.math.Long.fromString("863881327554208428")).equals(hashed));
     })();
+
+    //// Same as above, but with seed 0x123456
+    (function() {
+        var seed = 0x123456
+        var rawKey = new ArrayBuffer(33);
+            var byteView = new Int8Array(rawKey);
+                byteView[ 0] = 0x01; byteView[ 1] = 0x02; byteView[ 2] = 0x03; byteView[ 3] = 0x04;
+                byteView[ 4] = 0x05; byteView[ 5] = 0x06; byteView[ 6] = 0x07; byteView[ 7] = 0x08;
+                byteView[ 8] = 0x09; byteView[ 9] = 0x0A; byteView[10] = 0x0B; byteView[11] = 0x0C;
+                byteView[12] = 0x0D; byteView[13] = 0x0E; byteView[14] = 0x0F; byteView[15] = 0x10;
+                byteView[16] = 0x11; byteView[17] = 0x12; byteView[18] = 0x13; byteView[19] = 0x14;
+                byteView[20] = 0x15; byteView[21] = 0x16; byteView[22] = 0x17; byteView[23] = 0x18;
+                byteView[24] = 0x19; byteView[25] = 0x1A; byteView[26] = 0x1B; byteView[27] = 0x1C;
+                byteView[28] = 0x1D; byteView[29] = 0x1E; byteView[30] = 0x1F; byteView[31] = 0x20;
+                byteView[32] = 0x21;
+        var hashed = murmur3.hash128(rawKey, seed);
+        console.log(hashed.toString(10))
+        ok((new goog.math.Long.fromString("-1994940764045872751")).equals(hashed));
+    })();
+
+    (function() {
+        var seed = 0x123456
+        var rawKey = new ArrayBuffer(13);
+        ///val hexBytes = Array[Byte](  0x42.toByte , 0x6f.toByte , 0x6f.toByte ,
+       ///0x67.toByte , 0x65.toByte , 0x72.toByte , 0x6c.toByte , 0x69.toByte ,
+      ///0x63.toByte , 0x69.toByte , 0x6f.toByte , 0x75.toByte , 0x73.toByte)
+
+            var byteView = new Int8Array(rawKey);
+                byteView[ 0] = 0x42; byteView[ 1] = 0x6f; byteView[ 2] = 0x6f; byteView[ 3] = 0x67;
+                byteView[ 4] = 0x65; byteView[ 5] = 0x72; byteView[ 6] = 0x6c; byteView[ 7] = 0x69;
+                byteView[ 8] = 0x63; byteView[ 9] = 0x69; byteView[10] = 0x6f; byteView[11] = 0x75;
+                byteView[12] = 0x73;
+        var hashed = murmur3.hash128(rawKey, seed);
+        console.log(hashed.toString(10))
+        ok((new goog.math.Long.fromString("-675189066567607313")).equals(hashed));
+    })();
+
 });
+
+test("Additional cases", function() {
+   (function(assert) {
+   var boogerBytes = string2bytes("Boogerlicious")
+   console.log(boogerBytes)
+   ok(boogerBytes.length == 13)
+
+   var boogerHash = murmur3.hash128(boogerBytes, 0x123456)
+   console.log( "BOOGER HASH = " + boogerHash.toString(10))
+   ok(( new goog.math.Long.fromString("-675189066567607313")).equals(boogerHash));
+ })();
+
+/**
+(function(assert) {
+
+//// Add String2bytes , to compare strings easily
+var gettysburg = "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.\n\nNow we are engaged in a great civil war, testing whether that nation, or any nation so conceived and dedicated, can long endure. We are met on a great battle-field of that war. We have come to dedicate a portion of that field, as a final resting place for those who here gave their lives that that nation might live. It is altogether fitting and proper that we should do this.\n\nBut, in a larger sense, we can not dedicate — we can not consecrate — we can not hallow — this ground. The brave men, living and dead, who struggled here, have consecrated it, far above our poor power to add or detract. The world will little note, nor long remember what we say here, but it can never forget what they did here. It is for us the living, rather, to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced. It is rather for us to be here dedicated to the great task remaining before us — that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion — that we here highly resolve that these dead shall not have died in vain — that this nation, under God, shall have a new birth of freedom — and that government of the people, by the people, for the people, shall not perish from the earth"
+
+   var lincolnBytes = hllBH.string2bytes(gettysburg)
+   console.log(lincolnBytes)
+
+   var lincolnHash = murmur3.hash128(lincolnBytes, 0x123456)
+   console.log( "Lincoln HASH = " + lincolnHash.toString(10))
+   console.log( " Lincoln length " + gettysburg.length)
+   equal( gettysburg.length, 1464)
+   ok(( new goog.math.Long.fromString("8203366682652282570")).equals(lincolnHash));
+ })();
+ **/
+
+})
+
+
+test("Failing cases", (function() {
+   (function(assert) {
+        var seed = 0;
+        var rawKey = new ArrayBuffer(33);
+            var byteView = new Int8Array(rawKey);
+                byteView[ 0] = 0x01; byteView[ 1] = 0x02; byteView[ 2] = 0x03; byteView[ 3] = 0x04;
+                byteView[ 4] = 0x05; byteView[ 5] = 0x06; byteView[ 6] = 0x07; byteView[ 7] = 0x08;
+                byteView[ 8] = 0x09; byteView[ 9] = 0x0A; byteView[10] = 0x0B; byteView[11] = 0x0C;
+                byteView[12] = 0x0D; byteView[13] = 0x0E; byteView[14] = 0x0F; byteView[15] = 0x10;
+                byteView[16] = 0x11; byteView[17] = 0x12; byteView[18] = 0x13; byteView[19] = 0x14;
+                byteView[20] = 0x15; byteView[21] = 0x16; byteView[22] = 0x17; byteView[23] = 0x18;
+                byteView[24] = 0x19; byteView[25] = 0x1A; byteView[26] = 0x1B; byteView[27] = 0x1C;
+                byteView[28] = 0x1D; byteView[29] = 0x1E; byteView[30] = 0x1F; byteView[31] = 0x20;
+                byteView[32] = 0x21;
+        var hashed = murmur3.hash128(rawKey, seed);
+        console.log(hashed.toString(10))
+        ok((new goog.math.Long.fromString("-7031486286803411836")).equals(hashed));
+        ///ok((new goog.math.Long.fromString("863881327554208428")).equals(hashed));
+ })();
+
+} ));
 
 //==============================================================================
 // file-based data
-asyncTest("murmur3.hash128", function() {
-    d3.text("data/murmur_bigint.csv", function(error, text) {
-        if(error)
-            ok(false/*failed*/, error);
-        else /*no error*/
-            assertHash128(text);
 
-        start()/*allow qunit to continue*/;
-    });
-});
+///asyncTest("murmur3.hash128", function() {
+    ///d3.text("data/murmur_bigint.csv", function(error, text) {
+        ///if(error)
+            ///ok(false/*failed*/, error);
+        ///else /*no error*/
+            ///assertHash128(text);
+///
+        ///start()/*allow qunit to continue*/;
+    ///});
+///});
+
+
+function hashForString(seed,str) {
+  var bytes = string2bytes(str)
+
+  var hash = murmur3.hash128(bytes, seed)
+  console.log( "HASH of " + str + "  = " + hash.toString(10))
+
+  return hash.toString(10);
+}
 
 // -----------------------------------------------------------------------------
 // parses and asserts that the parsed seed and value matches that of the
@@ -337,4 +441,32 @@ function assertHash128(text) {
         var actualHashed = murmur3.hash128(rawKey, seed);
         ok(expectedHashed.equals(actualHashed));
     }
+}
+
+function string2bytes(item) {
+  //const bytes = new TextEncoder().encode(item);
+  ///return bytes
+  var sumBytes = 0;
+  for(var i=0; i<item.length; ++i) {
+   var checkChar = item.charCodeAt(i);
+   if(checkChar >= 256) {
+     sumBytes += 2;
+   } else {
+     sumBytes += 1;
+   }
+ }
+
+  var byteBuffer = new Uint8Array(sumBytes);
+ var ctr =  0;
+ for(var i=0; i<item.length; ++i) {
+   var checkChar = item.charCodeAt(i);
+   if(checkChar >= 256) {
+     byteBuffer[ctr++] = checkChar >> 8;
+     byteBuffer[ctr++] = checkChar & 0xFF;
+   } else {
+     ///console.log(" ADDING CHAR " + checkChar + " AT POS " + ctr)
+     byteBuffer[ctr++] = checkChar;
+   }
+ }
+ return  byteBuffer;
 }
